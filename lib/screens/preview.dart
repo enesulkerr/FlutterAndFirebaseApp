@@ -25,7 +25,10 @@ class _PreviewScreenState extends State<PreviewScreen> {
       appBar: AppBar(),
       body: SafeArea(
           child: Stack(children: [
-        Image.memory(args["foto"] as Uint8List),
+        Container(
+            width: double.infinity,
+            height: double.infinity,
+            child: Center(child: Image.memory(args["foto"] as Uint8List))),
         Positioned(
             bottom: 20,
             left: 20,
