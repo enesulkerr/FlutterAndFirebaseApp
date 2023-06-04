@@ -1,8 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
+import '../service/auth_service.dart';
+import '../service/storage_service.dart';
 
 List<CameraDescription> _cameras = <CameraDescription>[];
 
@@ -44,7 +47,7 @@ class _IndexScreenState extends State<IndexScreen>
 
   bool ready = false;
 
-  String kullaniciAdi = "";
+  String _emailc = "";
 
   @override
   void initState() {
@@ -143,7 +146,7 @@ class _IndexScreenState extends State<IndexScreen>
 
   @override
   Widget build(BuildContext context) {
-    kullaniciAdi = ModalRoute.of(context)!.settings.arguments as String? ?? "Varsayılan Kullanıcı Adı";
+    _emailc = ModalRoute.of(context)!.settings.arguments as String? ?? "Varsayılan Kullanıcı Adı";
     return Scaffold(
       drawer: drawer(),
       body: SafeArea(
@@ -172,11 +175,13 @@ class _IndexScreenState extends State<IndexScreen>
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(kullaniciAdi,
+                        Text(_emailc,
                             style: const TextStyle(
                                 fontSize: 20, color: Colors.white)),
                         ElevatedButton(
                             onPressed: () {
+                              var out = AuthService();
+                              out.signOut();
                               Navigator.of(context)
                                   .pushNamed('/', arguments: "deneme");
                             },
@@ -296,9 +301,12 @@ class _IndexScreenState extends State<IndexScreen>
           imageFile = file;
           videoController?.dispose();
           videoController = null;
+
         });
         if (file != null) {
           showInSnackBar('Picture saved to ${file.path}');
+          var picture = StorageService();
+          picture.uploadMedia(file.path as File);
         }
       }
     });

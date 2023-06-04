@@ -1,11 +1,13 @@
 import 'dart:typed_data';
 import 'dart:convert';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:uuid/uuid.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
 import 'package:shared_preferences/shared_preferences.dart';
+
 
 class PreviewScreen extends StatefulWidget {
   const PreviewScreen({super.key});
@@ -25,7 +27,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
       appBar: AppBar(),
       body: SafeArea(
           child: Stack(children: [
-        Container(
+        SizedBox(
             width: double.infinity,
             height: double.infinity,
             child: Center(child: Image.memory(args["foto"] as Uint8List))),
@@ -36,19 +38,34 @@ class _PreviewScreenState extends State<PreviewScreen> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Container(
+                SizedBox(
                   width: 150,
                   child: ElevatedButton(
                       onPressed: () async {
+
                         // post image to server with http
                         var imageEncoded =
                             base64Encode(args["foto"] as Uint8List);
+                        FirebaseStorage storage = FirebaseStorage.instance;
+                        var uuid = const Uuid();
+                        var struid = uuid.v1();
+                        var value = await _prefs;
+                        var email = value.getString("Email");
+                        Reference ref = storage.ref().child('$email/$struid.jpg');
+                        UploadTask uploadTask = ref.putString(imageEncoded, format: PutStringFormat.base64);
+
+                        String downloadURL = await uploadTask.then((TaskSnapshot snapshot) {
+                          return snapshot.ref.getDownloadURL();
+
+                        });
+
+                        print(downloadURL);
+
                         try {
+
                           _prefs.then((value) {
                             var fotolar = value.getStringList("fotograflar");
-                            if (fotolar == null) {
-                              fotolar = [];
-                            }
+                            fotolar ??= [];
 
                             fotolar.add(args["adres"]);
 
@@ -61,16 +78,16 @@ class _PreviewScreenState extends State<PreviewScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(content: Text(responseJson["sonuc"])));
                         } on SocketException {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                               content: Text("Sunucuya bağlanılamadı")));
                         } catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Bir hata oluştu")));
+                              const SnackBar(content: Text("Bir hata oluştu")));
                         }
                       },
                       child: const Text("Kontrol Et")),
                 ),
-                Container(
+                SizedBox(
                   width: 150,
                   child: ElevatedButton(
                       onPressed: () {

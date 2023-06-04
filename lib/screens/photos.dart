@@ -1,5 +1,5 @@
-import 'dart:io';
-import 'dart:typed_data';
+
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,15 +19,36 @@ class _PhotosScreenState extends State<PhotosScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    _prefs.then((value) {
-      setState(() {
-        fotograflar = value.getStringList("fotograflar");
-        if (fotograflar == null) {
-          fotograflar = [];
-        }
-      });
-    });
+    load();
+
+    // Firebase Storage bağlantısını başlat
+
+    // İlgili klasördeki dosyaların referansını al
+
   }
+
+
+  void load() async {
+
+    var value = await _prefs;
+    var email = value.getString("Email");
+    FirebaseStorage storage = FirebaseStorage.instance;
+    ListResult result = await storage.ref().child(email!).listAll();
+    // Dosyaların download URL'lerini al
+    for (Reference ref in result.items) {
+      String url = await ref.getDownloadURL();
+      setState(() {
+        fotograflar!.add(url);
+      });
+    }
+
+    // Download URL'leri yazdır
+    print('Download URLs for files in "your_folder":');
+    for (String url in fotograflar!) {
+      print(url);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +69,7 @@ class _PhotosScreenState extends State<PhotosScreen> {
                       ),
                       height: 250,
                       child: Center(
-                        child: Image.file(File(e), fit: BoxFit.cover),
+                        child: Image.network(e, fit: BoxFit.cover),
                       ),
                     ),
                     const SizedBox(height: 10)

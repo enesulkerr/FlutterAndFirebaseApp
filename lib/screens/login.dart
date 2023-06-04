@@ -60,11 +60,11 @@ class _LoginScreenState extends State<LoginScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Container(
+                  SizedBox(
                       width: 150,
                       child: ElevatedButton(
                           onPressed: giris, child: const Text("Giriş"),),),
-                  Container(
+                  SizedBox(
                     width: 150,
                     child: ElevatedButton(
                       onPressed: kayitOl,
@@ -107,28 +107,26 @@ class _LoginScreenState extends State<LoginScreen> {
           // Burada anasayfaya yönlendirme kodunu ekleyebilirsiniz
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(builder: (context) => IndexScreen()),
+            MaterialPageRoute(builder: (context) => const IndexScreen()),
           );
         } else {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Sunucuya bağlanılamadı")));
+              .showSnackBar(const SnackBar(content: Text("Sunucuya bağlanılamadı")));
           // Kullanıcı girişi başarısız
           // Hata mesajını kullanıcıya gösterebilirsiniz
         }
       } catch (error) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Bir hata oluştu")));
+            .showSnackBar(const SnackBar(content: Text("Bir hata oluştu")));
         // Hata oluştu
         // Hata mesajını kullanıcıya gösterebilirsiniz
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Lütfen e-posta ve parola giriniz")),
+        const SnackBar(content: Text("Lütfen e-posta ve parola giriniz")),
       );
     }
   }
-
-
 
   void kayitOl() {
     Navigator.of(context)

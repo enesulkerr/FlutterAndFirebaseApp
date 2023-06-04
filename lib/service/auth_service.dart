@@ -29,14 +29,14 @@ class AuthService {
   }
 
   //kayıt ol fonksiyonu
-  Future<User?> createPerson(String name, String email, String password) async {
+  Future<User?> createPerson(String email, String password) async {
     var user = await _auth.createUserWithEmailAndPassword(
         email: email, password: password);
 
     await _firestore
         .collection("Person")
         .doc(user.user!.uid)
-        .set({'userName': name, 'email': email});
+        .set({'email': email, 'password': password });
 
     return user.user;
   }

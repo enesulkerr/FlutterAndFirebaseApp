@@ -1,9 +1,7 @@
-import 'dart:convert';
-import 'dart:io';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_ilk_proje/screens/login.dart';
-import 'package:http/http.dart' as http;
+import 'package:flutter_ilk_proje/service/auth_service.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -13,7 +11,7 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class _RegisterScreenState extends State<RegisterScreen> {
-  final TextEditingController _kullaniciAdi = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   final TextEditingController _parola = TextEditingController();
   final TextEditingController _parolaKontrol = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -42,9 +40,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         decoration: BoxDecoration(
                             border: Border.all(color: Colors.black12)),
                         child: TextFormField(
-                          controller: _kullaniciAdi,
+                          controller: _emailController,
                           decoration: InputDecoration(
-                              hintText: "Kullanıcı adını giriniz...",
+                              hintText: "Lütfen geçerli bir email giriniz...",
                               filled: true,
                               fillColor: Colors.blueGrey.shade50),
                         )),
@@ -120,44 +118,45 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
+
+
+
+
+
   void kayitOldun() async {
-    if (_formKey.currentState!.validate()) {
-      if (_parola.text == _parolaKontrol.text) {
-      } else {
-        final snackBar = SnackBar(
-          content: const Text('Şifren eşleşmiyor!'),
-          action: SnackBarAction(
-            label: 'Kapat',
-            onPressed: () {
-              // Some code to undo the change.
-            },
-          ),
-        );
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
+
+    final email = _emailController.text;
+    final password = _parola.text;
+
+    if (email.isNotEmpty && password.isNotEmpty) {
+
       try {
-        final response = await http.post(
-            Uri.parse("http://localhost:5000/kayit"),
-            headers: {
-              "Content-Type": "application/json",
-              "Accept": "application/json"
-            },
-            body: jsonEncode(
-                {"kullaniciAdi": _kullaniciAdi.text, "parola": _parola.text}));
-        final responseJson = json.decode(response.body);
-        if (responseJson["sonuc"] == "OK") {
-          Navigator.of(context).pushNamedAndRemoveUntil("/", (route) => false);
+        var authService = AuthService();
+        User? user = await authService.createPerson(email, password);
+
+        if (user != null) {
+          // Kullanıcı girişi başarılı
+          // Burada anasayfaya yönlendirme kodunu ekleyebilirsiniz
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const LoginScreen()),
+          );
         } else {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text(responseJson["sonuc"])));
+              .showSnackBar(const SnackBar(content: Text("Sunucuya bağlanılamadı")));
+          // Kullanıcı girişi başarısız
+          // Hata mesajını kullanıcıya gösterebilirsiniz
         }
-      } on SocketException {
-        ScaffoldMessenger.of(context)
-            .showSnackBar(const SnackBar(content: Text("Sunucuya bağlanılamadı")));
-      } catch (e) {
+      } catch (error) {
         ScaffoldMessenger.of(context)
             .showSnackBar(const SnackBar(content: Text("Bir hata oluştu")));
+        // Hata oluştu
+        // Hata mesajını kullanıcıya gösterebilirsiniz
       }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Lütfen e-posta ve parola giriniz")),
+      );
     }
   }
 
