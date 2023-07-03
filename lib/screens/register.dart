@@ -35,60 +35,81 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 key: _formKey,
                 child: Column(
                   children: [
-                    const Text("Kullanıcı Adı"),
-                    Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black12)),
-                        child: TextFormField(
-                          controller: _emailController,
-                          decoration: InputDecoration(
-                              hintText: "Lütfen geçerli bir email giriniz...",
-                              filled: true,
-                              fillColor: Colors.blueGrey.shade50),
-                        )),
+                     const Text("Email"),
+                    ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      child: Container(
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.black12)),
+                          child: TextFormField(
+                            controller: _emailController,
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                                hintText: "Lütfen geçerli bir email giriniz...",
+                                filled: true,
+                                fillColor: Colors.blueGrey.shade50),
+                          )),
+                    ),
                     const SizedBox(
                       height: 15,
                     ),
                     const Text("Parola"),
-                    Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black12)),
-                        child: TextFormField(
-                          controller: _parola,
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Lütfen parolanızı giriniz';
-                            }
-                            if (value.length < 6) {
-                              return 'Parolanız 6 karakterden küçük olamaz';
-                            }
-                            return null;
-                          },
-                          obscureText: true,
-                        )),
+                    ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      child: Container(
+                        
+                          padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20), topRight:  Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20),
+                          ),
+                              border: Border.all(color: Colors.black12)),
+                          child: TextFormField(
+                            decoration: const InputDecoration(border: InputBorder.none),
+                            controller: _parola,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Lütfen parolanızı giriniz';
+                              }
+                              if (value.length < 6) {
+                                return 'Parolanız 6 karakterden küçük olamaz';
+                              }
+                              return null;
+                            },
+                            obscureText: true,
+                          )),
+                    ),
                     const SizedBox(
                       height: 15,
                     ),
                     const Text("Parolayı onayla"),
-                    Container(
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.black12)),
-                        child: TextFormField(
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Lütfen parola tekrarını giriniz';
-                            }
-                            if (value.length < 6) {
-                              return 'Parola tekrarı 6 karakterden küçük olamaz';
-                            }
-                            if (value != _parola.text) {
-                              return "Parola eşleşmiyor";
-                            }
-                            return null;
-                          },
-                          controller: _parolaKontrol,
-                          obscureText: true,
-                        )),
+                    ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      child: Container(
+                        padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                          decoration: BoxDecoration(
+                            borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20), topRight:  Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20),
+                          ),
+                              border: Border.all(color: Colors.black12)),
+                          child: TextFormField(
+                            decoration: const InputDecoration(border: InputBorder.none),
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Lütfen parola tekrarını giriniz';
+                              }
+                              if (value.length < 6) {
+                                return 'Parola tekrarı 6 karakterden küçük olamaz';
+                              }
+                              if (value != _parola.text) {
+                                return "Parola eşleşmiyor";
+                              }
+                              return null;
+                            },
+                            controller: _parolaKontrol,
+                            obscureText: true,
+                          )),
+                    ),
                     const SizedBox(
                       height: 30,
                     ),

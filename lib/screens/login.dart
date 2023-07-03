@@ -33,27 +33,40 @@ class _LoginScreenState extends State<LoginScreen> {
                 height: 15,
               ),
               const Text("Email"),
-              Container(
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.black12)),
-                  child: TextFormField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                        hintText: "Email adını giriniz...",
-                        filled: true,
-                        fillColor: Colors.blueGrey.shade50),
-                  )),
+              ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: Container(
+                    decoration:
+                        BoxDecoration(border: Border.all(color: Colors.black12)),
+                    child: TextFormField(
+                      controller: _emailController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                          hintText: "Email giriniz...",
+                          filled: true,
+                          fillColor: Colors.blueGrey.shade50),
+                    )),
+              ),
               const SizedBox(
                 height: 15,
               ),
               const Text("Parola"),
-              Container(
-                  decoration:
-                      BoxDecoration(border: Border.all(color: Colors.black12)),
-                  child: TextFormField(
-                    controller: _passwordController,
-                    obscureText: true,
-                  )),
+              ClipRRect(
+                borderRadius: const BorderRadius.all(Radius.circular(20)),
+                child: Container(
+                  padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+                    decoration:
+                        BoxDecoration(
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(20), topRight:  Radius.circular(20), bottomLeft: Radius.circular(20), bottomRight: Radius.circular(20),
+                          ),
+                          border: Border.all(color: Colors.black12),),
+                    child: TextFormField(
+                      decoration: const InputDecoration(border: InputBorder.none),
+                      controller: _passwordController,
+                      obscureText: true,
+                    )),
+              ),
               const SizedBox(
                 height: 30,
               ),
@@ -105,10 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
         if (user != null) {
           // Kullanıcı girişi başarılı
           // Burada anasayfaya yönlendirme kodunu ekleyebilirsiniz
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const IndexScreen()),
-          );
+          Navigator.of(context).pushReplacementNamed("/index",arguments: email);
         } else {
           ScaffoldMessenger.of(context)
               .showSnackBar(const SnackBar(content: Text("Sunucuya bağlanılamadı")));
